@@ -1,50 +1,53 @@
-== Basic Tricks ==
+== Basis Trucs ==
 
-Rather than diving into a sea of Git commands, use these elementary examples to
-get your feet wet. Despite their simplicity, each of them are useful.
-Indeed, in my first months with Git I never ventured beyond the material in this chapter.
+In plaats van in een zee van Git commando's te duiken, kun je deze basale voorbeelden
+gebruiken om je voeten nat te maken. Ondanks dat ze eenvoudig zijn, zijn ze bruikbaar.
+Gedurende mijn eerste maanden met Git ben ik nooit verder gegaan dan het materiaal in
+dit hoofdstuk.
 
-=== Saving State ===
+=== De Status Bewaren ===
 
-About to attempt something drastic? Before you do, take a snapshot of all files
-in the current directory with:
+Ga je iets drastisch proberen? Sla dan voor je begint een tussen versie op van alle
+bestanden in de huidige map:
 
  $ git init
  $ git add .
  $ git commit -m "My first backup"
 
-Now if your new edits go awry, restore the pristine version:
+Als je aanpassingen mis gaan, kun je de originele versie herstellen:
 
  $ git reset --hard
 
-To save the state again:
+Om de status opnieuw op te slaan:
 
  $ git commit -a -m "Another backup"
 
-=== Add, Delete, Rename ===
+=== Toevoegen, Verwijderen, Hernoemen ===
 
-The above only keeps track of the files that were present when you first ran *git add*. If you add new files or subdirectories, you'll have to tell Git:
+Bovenstaande houdt alleen de bestanden bij die aanwezig waren toen je de eerste keer *git add* uitvoerde. Als je nieuwe bestanden of
+submappen toevoegd, zul je dat Git moeten vertellen:
 
  $ git add readme.txt Documentation
 
-Similarly, if you want Git to forget about certain files:
+Als je Git sommige bestanden wil laten vergeten zul je iets soortgelijks moeten doen:
 
  $ git rm kludge.h obsolete.c
  $ git rm -r incriminating/evidence/
 
-Git deletes these files for you if you haven't already.
+Git verwijderd deze bestanden voor je, als je dat zelf al niet gedaan hebt.
 
-Renaming a file is the same as removing the old name and adding the new name. There's also the shortcut *git mv* which has the same syntax as the *mv* command. For example:
+Een bestand hernoemen is hetzelfde als de oude naam verwijderen en de nieuwe toevoegen. Er is ook een afkorting *git mv*, dat dezelfde
+syntax als het *mv* commando heeft. Bijvoorbeeld:
 
  $ git mv bug.c feature.c
 
-=== Advanced Undo/Redo ===
+=== Geavanceerde Undo/Redo ===
 
-Sometimes you just want to go back and forget about every change past a certain point because they're all wrong. Then:
+Soms wil je alleen maar terug gaan naar een bepaald punt en alle wijzigingen erna vergeten, omdat ze allemaal fout zijn. Dan toont:
 
  $ git log
 
-shows you a list of recent commits, and their SHA1 hashes:
+je een lijst van recente commits, met hun SHA1 hash:
 
 ----------------------------------
 commit 766f9881690d240ba334153047649b8b8f11c664
@@ -60,149 +63,150 @@ Date:   Thu Jan 1 00:00:00 1970 +0000
     Initial commit.
 ----------------------------------
 
-The first few characters of the hash are enough to specify the commit;
-alternatively, copy and paste the entire hash. Type:
+De eerste paar karakters van de hash zijn voldoende om de commit te specificeren;
+als alternatief kun je de hele hash copieren en plakken. Type:
 
  $ git reset --hard 766f
 
-to restore the state to a given commit and erase all newer commits from the record permanently.
+om de toestand naar de gegeven commit te herstellen en alle nieuwere commits permanent te verwijderen.
 
-Other times you want to hop to an old state briefly. In this case, type:
+Soms wil je alleen even naar een oude toestand springen. In dat geval, type:
 
  $ git checkout 82f5
 
-This takes you back in time, while preserving newer commits. However, like time travel in a science-fiction movie, if you now edit and commit, you will be in an alternate reality, because your actions are different to what they were the first time around.
+Hiermee ga je terug in de tijd, maar je bewaard de nieuwere commits. Maar, als je nu aanpassingen maakt en commit zul je, net als in een science-fiction film, in een andere realiteit zitten, want je acties zijn anders dan de eerste keer.
 
-This alternate reality is called a 'branch', and <<branch,we'll have more to say about this later>>. For now, just remember that
+Deze andere realiteit wordt een 'branch' genoemd, en <<branch,we'll have more to say about this later>>. Onthoud voor nu dat
 
  $ git checkout master
 
-will take you back to the present. Also, to stop Git complaining, always
-commit or reset your changes before running checkout.
+je terug brengt naar het heden. Om Git op te laten houden met klagen moet je altijd je wijzigingen resetten of committen, alvorens een checkout te doen.
 
-To take the computer game analogy again:
+Maak de vergelijking met een computer spel nog eens:
 
-- *`git reset --hard`*: load an old save and delete all saved games newer than the one just loaded.
+- *`git reset --hard`*: laad een oude status en verwijder alle nieuwere statussen dan degene die je zojuist geladen hebt.
 
-- *`git checkout`*: load an old game, but if you play on, the game state will deviate from the newer saves you made the first time around. Any saved games you make now will end up in a separate branch representing the alternate reality you have entered. <<branch,We deal with this later>>.
+- *`git checkout`*: laad een oude status, maar als je nu verder speelt zal de status afwijken van de nieuwere statussen die je eerder gemaakt hebt. Als je nu nieuwe statussen bewaard zullen deze eindigen in een nieuwe branch, die de alternatieve realiteit weergeeft. <<branch,We deal with this later>>.
 
-You can choose only to restore particular files and subdirectories by appending them after the command:
+Je kunt er voor kiezen alleen bepaalde bestanden en submappen te herstellen door ze achter het commando te zetten:
 
  $ git checkout 82f5 some.file another.file
 
-Take care, as this form of *checkout* can silently overwrite files. To
-prevent accidents, commit before running any checkout command, especially when
-first learning Git. In general, whenever you feel unsure about any operation, Git command or not, first run *git commit -a*.
+Pas op, want deze vorm van *checkout* kan zonder waarschuwing bestanden overschrijven. Om ongelukken te voorkomen kun je het best een commit
+doen alvorens een checkout commando; in het bijzonder als je Git pas aan het leren bent. Als je in het algemeen onzeker bent over een
+commando, Git commando of niet, kun je het beste eerst *git commit -a* uitvoeren.
 
-Don't like cutting and pasting hashes? Then use:
+Geen zin om hashes te knippen en plakken? Gebruik dan:
 
  $ git checkout :/"My first b"
 
-to jump to the commit that starts with a given message.
-You can also ask for the 5th-last saved state:
+om te springen naar de commit die met een gegeven boodschap begint.
+Je kunt ook om de 5e laatste opgeslagen status vragen:
 
  $ git checkout master~5
 
-=== Reverting ===
+=== Terugdraaien ===
 
-In a court of law, events can be stricken from the record. Likewise, you can pick specific commits to undo.
+Bij rechtspraak kunnen gebeurtenissen verwijderd worden uit de notulen. Op dezelfde manier kun je ook specifieke commits kiezen om ongedaan
+te maken.
 
  $ git commit -a
  $ git revert 1b6d
 
-will undo just the commit with the given hash. The revert is recorded as a new
-commit, which you can confirm by running *git log*.
+zal alleen de commit met de gegeven hash ongedaan maken. Het terugdraaien wordt als een nieuwe commit vastgelegd, wat je kunt nagaan door
+*git log* uit te voeren.
 
-=== Changelog Generation ===
+=== Changelog Generatie ===
 
-Some projects require a http://en.wikipedia.org/wiki/Changelog[changelog].
-Generate one by typing:
+Sommige projecten vereisen een http://en.wikipedia.org/wiki/Changelog[changelog].
+Deze kun je generen door middel van:
 
  $ git log > ChangeLog
 
-=== Downloading Files ===
+=== Bestanden Downloaden ===
 
-Get a copy of a project managed with Git by typing:
+Om een kopie te krijgen van een project dat met Git beheerd wordt:
 
  $ git clone git://server/path/to/files
 
-For example, to get all the files I used to create this site:
+Om bijvoorbeeld alle bestanden te krijgen, die ik gebruikt heb om deze site te maken:
 
  $ git clone git://git.or.cz/gitmagic.git
 
-We'll have much to say about the *clone* command soon.
+We zullen binnenkort veel te vertellen hebben over het *clone* commando.
 
-=== The Bleeding Edge ===
+=== De Bleeding Edge ===
 
-If you've already downloaded a copy of a project using *git clone*, you can upgrade to the latest version with:
+Als je al een kopie van een project gedownload hebt met *git clone*, dan kun je het naar de laatste versie brengen met:
 
  $ git pull
 
-=== Instant Publishing ===
+=== Direct Publiceren ===
 
-Suppose you've written a script you'd like to share with others. You could just tell them to download from your computer, but if they do so while you're improving the script or making experimental changes, they could wind up in trouble.  Of course, this is why release cycles exist. Developers may work on a project frequently, but they only make the code available when they feel it is presentable.
+Stel dat je een script hebt geschreven, dat je wil delen met anderen. Je kunt ze vertellen dat ze het van je computer moeten downloaden, maar als ze dat doen terwijl je het script aan het verbeteren bent of experimentele wijzigingen aan het doen bent, dan kunnen ze in de problemen komen. Dit is uiteraard de reden dat er versies vrijgegeven worden. De ontwikkelaars zullen mogelijk vaak aan een project werken, maar ze maken de code alleen beschikbaar als ze het presenteerbaar vinden.
 
-To do this with Git, in the directory where your script resides:
+Om dit in Git te doen, in de map waarin je script zich bevindt:
 
  $ git init
  $ git add .
  $ git commit -m "First release"
 
-Then tell your users to run:
+Zeg vervolgens tegen je gebruikers dit uit te voeren:
 
  $ git clone your.computer:/path/to/script
 
-to download your script. This assumes they have ssh access. If not, run *git daemon* and tell your users to instead run:
+om je script te downloaden. Dit gaat er vanuit dat ze ssh toegang hebben. Zo niet, draai dan *git daemon* en vertel je gebruikers dan in de
+plaats dit uit te voeren:
 
  $ git clone git://your.computer/path/to/script
 
-From now on, every time your script is ready for release, execute:
+Voer vanaf nu, iedere keer als je script klaar is om vrijgegeven te worden, dit uit:
 
  $ git commit -a -m "Next release"
 
-and your users can upgrade their version by changing to the directory containing your script and typing:
+en je gebruikers kunnen hun versie van het script vernieuwen door naar de map te gaan waarin je script staat en het volgende in te typen:
 
  $ git pull
 
-Your users will never end up with a version of your script you don't want them to see.
+Je gebruikers zullen dan nooit eindigen met een versie van je script dat je ze niet wilde laten zien.
 
-=== What Have I Done? ===
+=== Wat heb ik gedaan? ===
 
-Find out what changes you've made since the last commit with:
+Om uit te vinden welke wijzigingen je gedaan hebt sinds je laatste commit:
 
  $ git diff
 
-Or since yesterday:
+Of sinds gisteren:
 
  $ git diff "@{yesterday}"
 
-Or between a particular version and 2 versions ago:
+Of tussen een specifieke versie en twee versies geleden:
 
  $ git diff 1b6d "master~2"
 
-In each case the output is a patch that can be applied with *git apply*.
-Try also:
+In ieder geval is de uitvoer een patch, die kan toegepast worden met *git apply*.
+Probeer ook:
 
  $ git whatchanged --since="2 weeks ago"
 
-Often I'll browse history with http://sourceforge.net/projects/qgit[qgit] instead, due to its slick photogenic interface, or http://jonas.nitro.dk/tig/[tig], a text-mode interface that works well over slow connections. Alternatively, install a web server, run *git instaweb* and fire up any web browser.
+In plaats daarvan, blader ik vaak door de geschiedenis met http://sourceforge.net/projects/qgit[qgit], vanwege het gelikte fotogenieke interface, of met http://jonas.nitro.dk/tig/[tig], een tekst gebaseerde interface dat goed over trage verbindingen werkt. Als alternatief kun je een webserver installeren, *git instaweb* uitvoeren en iedere web browser starten.
 
-=== Exercise ===
+=== Oefening ===
 
-Let A, B, C, D be four successive commits where B is the same as A except some files have been removed. We want to add the files back at D. How can we do this?
+Laat A, B, C, D vier opvolgende commits zijn, waarbij B hetzelfde is als A behalve dat er wat bestanden zijn verwijderd. We willen de bestanden opnieuw toevoegen in D. Hoe kunnen we dat doen?
 
-There are at least three solutions. Assuming we are at D:
+Er zijn minstens drie oplossingen. Gesteld dat we bij D zijn:
 
-  1. The difference between A and B are the removed files. We can create a patch representing this difference and apply it:
+  1. Het verschil in A en B zijn de verwijderde bestanden. We kunnen een patch genereren, die dit verschil representeerd en die toepassen:
 
    $ git diff B A | git apply
 
-  2. Since we saved the files back at A, we can retrieve them:
+  2. Omdat we de bestanden in A hebben opgeslagen, kunnen we ze ophalen:
 
    $ git checkout A foo.c bar.h
 
-  3. We can view going from A to B as a change we want to undo:
+  3. We kunnen de wijziging van A naar B als een wijziging zien, die we ongedaan willen maken:
 
    $ git revert B
 
-Which choice is best? Whichever you prefer most. It is easy to get what you want with Git, and often there are many ways to get it.
+Welke optie is het beste? Degene die je het meest prefereert. Het is gemakkelijk om te krijgen wat je wilt met Git, en vaak zijn er meerdere manieren om iets voor elkaar te krijgen.
